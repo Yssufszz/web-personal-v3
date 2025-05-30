@@ -282,10 +282,17 @@ const AdminPanel = () => {
   const handleExperienceSubmit = async (e) => {
     e.preventDefault()
     try {
+      const experienceData = {
+        ...experienceForm,
+        is_current: Boolean(experienceForm.is_current),
+        start_date: experienceForm.start_date || null,
+        end_date: experienceForm.is_current ? null : (experienceForm.end_date || null)
+      }
+
       if (editingExperience) {
         const { error } = await supabase
           .from('experiences')
-          .update(experienceForm)
+          .update(experienceData)
           .eq('id', editingExperience.id)
         
         if (error) throw error
@@ -294,7 +301,7 @@ const AdminPanel = () => {
       } else {
         const { error } = await supabase
           .from('experiences')
-          .insert([experienceForm])
+          .insert([experienceData])
         
         if (error) throw error
         alert('Experience added successfully!')
@@ -314,12 +321,17 @@ const AdminPanel = () => {
       fetchExperiences()
     } catch (error) {
       console.error('Error saving experience:', error)
-      alert('Error saving experience')
+      alert('Error saving experience: ' + error.message)
     }
   }
 
   const editExperience = (experience) => {
-    setExperienceForm(experience)
+    setExperienceForm({
+      ...experience,
+      is_current: Boolean(experience.is_current),
+      start_date: experience.start_date || '',
+      end_date: experience.end_date || ''
+    })
     setEditingExperience(experience)
   }
 
