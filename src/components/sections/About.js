@@ -28,8 +28,8 @@ const About = () => {
       <div className="container">
         <div className="row">
           <div className="col-lg-8 mx-auto">
-            <h2 className="text-center mb-4">{t('aboutMe')}</h2>
-            <div className="card">
+            <h2 className="text-center mb-4 animate-fade-in">{t('aboutMe')}</h2>
+            <div className="card glass-effect animate-slide-up">
               <div className="card-body">
                 <p className="card-text">
                   {language === 'en' 
