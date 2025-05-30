@@ -14,9 +14,51 @@ const AdminPanel = () => {
     avatar_url: ''
   })
 
+  // States for Skills
+  const [skills, setSkills] = useState([])
+  const [skillForm, setSkillForm] = useState({
+    name_en: '',
+    name_id: '',
+    level: 1,
+    category: ''
+  })
+  const [editingSkill, setEditingSkill] = useState(null)
+
+  // States for Projects
+  const [projects, setProjects] = useState([])
+  const [projectForm, setProjectForm] = useState({
+    title_en: '',
+    title_id: '',
+    description_en: '',
+    description_id: '',
+    tech_stack: '',
+    github_url: '',
+    demo_url: '',
+    image_url: ''
+  })
+  const [editingProject, setEditingProject] = useState(null)
+
+  // States for Experience
+  const [experiences, setExperiences] = useState([])
+  const [experienceForm, setExperienceForm] = useState({
+    company_en: '',
+    company_id: '',
+    position_en: '',
+    position_id: '',
+    description_en: '',
+    description_id: '',
+    start_date: '',
+    end_date: '',
+    is_current: false
+  })
+  const [editingExperience, setEditingExperience] = useState(null)
+
   useEffect(() => {
     if (user) {
       fetchProfile()
+      fetchSkills()
+      fetchProjects()
+      fetchExperiences()
     }
   }, [user])
 
@@ -61,6 +103,242 @@ const AdminPanel = () => {
       ...profile,
       [e.target.name]: e.target.value
     })
+  }
+
+  // Skills Functions
+  const fetchSkills = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('skills')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (data) {
+        setSkills(data)
+      }
+    } catch (error) {
+      console.error('Error fetching skills:', error)
+    }
+  }
+
+  const handleSkillSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      if (editingSkill) {
+        const { error } = await supabase
+          .from('skills')
+          .update(skillForm)
+          .eq('id', editingSkill.id)
+        
+        if (error) throw error
+        alert('Skill updated successfully!')
+        setEditingSkill(null)
+      } else {
+        const { error } = await supabase
+          .from('skills')
+          .insert([skillForm])
+        
+        if (error) throw error
+        alert('Skill added successfully!')
+      }
+      
+      setSkillForm({
+        name_en: '',
+        name_id: '',
+        level: 1,
+        category: ''
+      })
+      fetchSkills()
+    } catch (error) {
+      console.error('Error saving skill:', error)
+      alert('Error saving skill')
+    }
+  }
+
+  const editSkill = (skill) => {
+    setSkillForm(skill)
+    setEditingSkill(skill)
+  }
+
+  const deleteSkill = async (id) => {
+    if (window.confirm('Are you sure you want to delete this skill?')) {
+      try {
+        const { error } = await supabase
+          .from('skills')
+          .delete()
+          .eq('id', id)
+        
+        if (error) throw error
+        alert('Skill deleted successfully!')
+        fetchSkills()
+      } catch (error) {
+        console.error('Error deleting skill:', error)
+        alert('Error deleting skill')
+      }
+    }
+  }
+
+  // Projects Functions
+  const fetchProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (data) {
+        setProjects(data)
+      }
+    } catch (error) {
+      console.error('Error fetching projects:', error)
+    }
+  }
+
+  const handleProjectSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const projectData = {
+        ...projectForm,
+        tech_stack: projectForm.tech_stack.split(',').map(tech => tech.trim())
+      }
+
+      if (editingProject) {
+        const { error } = await supabase
+          .from('projects')
+          .update(projectData)
+          .eq('id', editingProject.id)
+        
+        if (error) throw error
+        alert('Project updated successfully!')
+        setEditingProject(null)
+      } else {
+        const { error } = await supabase
+          .from('projects')
+          .insert([projectData])
+        
+        if (error) throw error
+        alert('Project added successfully!')
+      }
+      
+      setProjectForm({
+        title_en: '',
+        title_id: '',
+        description_en: '',
+        description_id: '',
+        tech_stack: '',
+        github_url: '',
+        demo_url: '',
+        image_url: ''
+      })
+      fetchProjects()
+    } catch (error) {
+      console.error('Error saving project:', error)
+      alert('Error saving project')
+    }
+  }
+
+  const editProject = (project) => {
+    setProjectForm({
+      ...project,
+      tech_stack: Array.isArray(project.tech_stack) ? project.tech_stack.join(', ') : project.tech_stack
+    })
+    setEditingProject(project)
+  }
+
+  const deleteProject = async (id) => {
+    if (window.confirm('Are you sure you want to delete this project?')) {
+      try {
+        const { error } = await supabase
+          .from('projects')
+          .delete()
+          .eq('id', id)
+        
+        if (error) throw error
+        alert('Project deleted successfully!')
+        fetchProjects()
+      } catch (error) {
+        console.error('Error deleting project:', error)
+        alert('Error deleting project')
+      }
+    }
+  }
+
+  // Experience Functions
+  const fetchExperiences = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('experiences')
+        .select('*')
+        .order('start_date', { ascending: false })
+      
+      if (data) {
+        setExperiences(data)
+      }
+    } catch (error) {
+      console.error('Error fetching experiences:', error)
+    }
+  }
+
+  const handleExperienceSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      if (editingExperience) {
+        const { error } = await supabase
+          .from('experiences')
+          .update(experienceForm)
+          .eq('id', editingExperience.id)
+        
+        if (error) throw error
+        alert('Experience updated successfully!')
+        setEditingExperience(null)
+      } else {
+        const { error } = await supabase
+          .from('experiences')
+          .insert([experienceForm])
+        
+        if (error) throw error
+        alert('Experience added successfully!')
+      }
+      
+      setExperienceForm({
+        company_en: '',
+        company_id: '',
+        position_en: '',
+        position_id: '',
+        description_en: '',
+        description_id: '',
+        start_date: '',
+        end_date: '',
+        is_current: false
+      })
+      fetchExperiences()
+    } catch (error) {
+      console.error('Error saving experience:', error)
+      alert('Error saving experience')
+    }
+  }
+
+  const editExperience = (experience) => {
+    setExperienceForm(experience)
+    setEditingExperience(experience)
+  }
+
+  const deleteExperience = async (id) => {
+    if (window.confirm('Are you sure you want to delete this experience?')) {
+      try {
+        const { error } = await supabase
+          .from('experiences')
+          .delete()
+          .eq('id', id)
+        
+        if (error) throw error
+        alert('Experience deleted successfully!')
+        fetchExperiences()
+      } catch (error) {
+        console.error('Error deleting experience:', error)
+        alert('Error deleting experience')
+      }
+    }
   }
 
   if (!user) {
@@ -166,28 +444,478 @@ const AdminPanel = () => {
       )}
 
       {activeTab === 'skills' && (
-        <div className="card">
-          <div className="card-body">
-            <h4>Manage Skills</h4>
-            <p>Skills management interface will be here</p>
+        <div>
+          <div className="card mb-4">
+            <div className="card-body">
+              <h4>{editingSkill ? 'Edit Skill' : 'Add New Skill'}</h4>
+              <form onSubmit={handleSkillSubmit}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Name (English)</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={skillForm.name_en}
+                        onChange={(e) => setSkillForm({...skillForm, name_en: e.target.value})}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Name (Indonesian)</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={skillForm.name_id}
+                        onChange={(e) => setSkillForm({...skillForm, name_id: e.target.value})}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Level (1-5)</label>
+                      <select
+                        className="form-control"
+                        value={skillForm.level}
+                        onChange={(e) => setSkillForm({...skillForm, level: parseInt(e.target.value)})}
+                      >
+                        <option value={1}>1 - Beginner</option>
+                        <option value={2}>2 - Novice</option>
+                        <option value={3}>3 - Intermediate</option>
+                        <option value={4}>4 - Advanced</option>
+                        <option value={5}>5 - Expert</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Category</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={skillForm.category}
+                        onChange={(e) => setSkillForm({...skillForm, category: e.target.value})}
+                        placeholder="e.g., Programming, Design, Database"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" className="btn btn-primary me-2">
+                  {editingSkill ? 'Update Skill' : 'Add Skill'}
+                </button>
+                {editingSkill && (
+                  <button 
+                    type="button" 
+                    className="btn btn-secondary"
+                    onClick={() => {
+                      setEditingSkill(null)
+                      setSkillForm({name_en: '', name_id: '', level: 1, category: ''})
+                    }}
+                  >
+                    Cancel
+                  </button>
+                )}
+              </form>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-body">
+              <h4>Skills List</h4>
+              {skills.length === 0 ? (
+                <p>No skills added yet.</p>
+              ) : (
+                <div className="table-responsive">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Name (EN)</th>
+                        <th>Name (ID)</th>
+                        <th>Level</th>
+                        <th>Category</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {skills.map((skill) => (
+                        <tr key={skill.id}>
+                          <td>{skill.name_en}</td>
+                          <td>{skill.name_id}</td>
+                          <td>{skill.level}/5</td>
+                          <td>{skill.category}</td>
+                          <td>
+                            <button 
+                              className="btn btn-sm btn-outline-primary me-2"
+                              onClick={() => editSkill(skill)}
+                            >
+                              Edit
+                            </button>
+                            <button 
+                              className="btn btn-sm btn-outline-danger"
+                              onClick={() => deleteSkill(skill.id)}
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
 
       {activeTab === 'projects' && (
-        <div className="card">
-          <div className="card-body">
-            <h4>Manage Projects</h4>
-            <p>Projects management interface will be here</p>
+        <div>
+          <div className="card mb-4">
+            <div className="card-body">
+              <h4>{editingProject ? 'Edit Project' : 'Add New Project'}</h4>
+              <form onSubmit={handleProjectSubmit}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Title (English)</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={projectForm.title_en}
+                        onChange={(e) => setProjectForm({...projectForm, title_en: e.target.value})}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Title (Indonesian)</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={projectForm.title_id}
+                        onChange={(e) => setProjectForm({...projectForm, title_id: e.target.value})}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Description (English)</label>
+                  <textarea
+                    className="form-control"
+                    rows="3"
+                    value={projectForm.description_en}
+                    onChange={(e) => setProjectForm({...projectForm, description_en: e.target.value})}
+                  ></textarea>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Description (Indonesian)</label>
+                  <textarea
+                    className="form-control"
+                    rows="3"
+                    value={projectForm.description_id}
+                    onChange={(e) => setProjectForm({...projectForm, description_id: e.target.value})}
+                  ></textarea>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Tech Stack (comma separated)</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={projectForm.tech_stack}
+                    onChange={(e) => setProjectForm({...projectForm, tech_stack: e.target.value})}
+                    placeholder="e.g., React, Node.js, MongoDB"
+                  />
+                </div>
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label className="form-label">GitHub URL</label>
+                      <input
+                        type="url"
+                        className="form-control"
+                        value={projectForm.github_url}
+                        onChange={(e) => setProjectForm({...projectForm, github_url: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label className="form-label">Demo URL</label>
+                      <input
+                        type="url"
+                        className="form-control"
+                        value={projectForm.demo_url}
+                        onChange={(e) => setProjectForm({...projectForm, demo_url: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label className="form-label">Image URL</label>
+                      <input
+                        type="url"
+                        className="form-control"
+                        value={projectForm.image_url}
+                        onChange={(e) => setProjectForm({...projectForm, image_url: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" className="btn btn-primary me-2">
+                  {editingProject ? 'Update Project' : 'Add Project'}
+                </button>
+                {editingProject && (
+                  <button 
+                    type="button" 
+                    className="btn btn-secondary"
+                    onClick={() => {
+                      setEditingProject(null)
+                      setProjectForm({
+                        title_en: '', title_id: '', description_en: '', description_id: '',
+                        tech_stack: '', github_url: '', demo_url: '', image_url: ''
+                      })
+                    }}
+                  >
+                    Cancel
+                  </button>
+                )}
+              </form>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-body">
+              <h4>Projects List</h4>
+              {projects.length === 0 ? (
+                <p>No projects added yet.</p>
+              ) : (
+                <div className="row">
+                  {projects.map((project) => (
+                    <div key={project.id} className="col-md-6 mb-3">
+                      <div className="card">
+                        <div className="card-body">
+                          <h5 className="card-title">{project.title_en}</h5>
+                          <p className="card-text">{project.description_en?.substring(0, 100)}...</p>
+                          <p className="small text-muted">
+                            Tech: {Array.isArray(project.tech_stack) ? project.tech_stack.join(', ') : project.tech_stack}
+                          </p>
+                          <button 
+                            className="btn btn-sm btn-outline-primary me-2"
+                            onClick={() => editProject(project)}
+                          >
+                            Edit
+                          </button>
+                          <button 
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => deleteProject(project.id)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
 
       {activeTab === 'experience' && (
-        <div className="card">
-          <div className="card-body">
-            <h4>Manage Experience</h4>
-            <p>Experience management interface will be here</p>
+        <div>
+          <div className="card mb-4">
+            <div className="card-body">
+              <h4>{editingExperience ? 'Edit Experience' : 'Add New Experience'}</h4>
+              <form onSubmit={handleExperienceSubmit}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Company (English)</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={experienceForm.company_en}
+                        onChange={(e) => setExperienceForm({...experienceForm, company_en: e.target.value})}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Company (Indonesian)</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={experienceForm.company_id}
+                        onChange={(e) => setExperienceForm({...experienceForm, company_id: e.target.value})}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Position (English)</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={experienceForm.position_en}
+                        onChange={(e) => setExperienceForm({...experienceForm, position_en: e.target.value})}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label">Position (Indonesian)</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={experienceForm.position_id}
+                        onChange={(e) => setExperienceForm({...experienceForm, position_id: e.target.value})}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Description (English)</label>
+                  <textarea
+                    className="form-control"
+                    rows="3"
+                    value={experienceForm.description_en}
+                    onChange={(e) => setExperienceForm({...experienceForm, description_en: e.target.value})}
+                  ></textarea>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Description (Indonesian)</label>
+                  <textarea
+                    className="form-control"
+                    rows="3"
+                    value={experienceForm.description_id}
+                    onChange={(e) => setExperienceForm({...experienceForm, description_id: e.target.value})}
+                  ></textarea>
+                </div>
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label className="form-label">Start Date</label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        value={experienceForm.start_date}
+                        onChange={(e) => setExperienceForm({...experienceForm, start_date: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <label className="form-label">End Date</label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        value={experienceForm.end_date}
+                        onChange={(e) => setExperienceForm({...experienceForm, end_date: e.target.value})}
+                        disabled={experienceForm.is_current}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="mb-3">
+                      <div className="form-check mt-4">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          checked={experienceForm.is_current}
+                          onChange={(e) => setExperienceForm({
+                            ...experienceForm, 
+                            is_current: e.target.checked,
+                            end_date: e.target.checked ? '' : experienceForm.end_date
+                          })}
+                        />
+                        <label className="form-check-label">
+                          Current Job
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" className="btn btn-primary me-2">
+                  {editingExperience ? 'Update Experience' : 'Add Experience'}
+                </button>
+                {editingExperience && (
+                  <button 
+                    type="button" 
+                    className="btn btn-secondary"
+                    onClick={() => {
+                      setEditingExperience(null)
+                      setExperienceForm({
+                        company_en: '', company_id: '', position_en: '', position_id: '',
+                        description_en: '', description_id: '', start_date: '', end_date: '', is_current: false
+                      })
+                    }}
+                  >
+                    Cancel
+                  </button>
+                )}
+              </form>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-body">
+              <h4>Experience List</h4>
+              {experiences.length === 0 ? (
+                <p>No experiences added yet.</p>
+              ) : (
+                <div className="table-responsive">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Company</th>
+                        <th>Position</th>
+                        <th>Duration</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {experiences.map((exp) => (
+                        <tr key={exp.id}>
+                          <td>{exp.company_en}</td>
+                          <td>{exp.position_en}</td>
+                          <td>
+                            {exp.start_date} - {exp.is_current ? 'Present' : exp.end_date}
+                          </td>
+                          <td>
+                            <button 
+                              className="btn btn-sm btn-outline-primary me-2"
+                              onClick={() => editExperience(exp)}
+                            >
+                              Edit
+                            </button>
+                            <button 
+                              className="btn btn-sm btn-outline-danger"
+                              onClick={() => deleteExperience(exp.id)}
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

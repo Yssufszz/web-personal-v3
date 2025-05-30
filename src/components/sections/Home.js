@@ -33,9 +33,6 @@ const Home = () => {
               {profile?.full_name || 'Your Name'}
             </h2>
             <p className="lead">{t('developer')}</p>
-            <p className="fs-5">
-              {language === 'en' ? profile?.bio_en : profile?.bio_id || 'Welcome to my portfolio website where you can learn more about my skills, projects, and experience.'}
-            </p>
           </div>
           <div className="col-md-4 text-center">
             {profile?.avatar_url && (

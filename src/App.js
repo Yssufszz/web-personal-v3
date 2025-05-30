@@ -13,6 +13,7 @@ import Projects from './components/sections/Projects'
 import Experience from './components/sections/Experience'
 import Contact from './components/sections/Contact'
 import AdminPanel from './components/Admin/AdminPanel'
+import AdminLogin from './components/Admin/AdminLogin'
 
 const MainSite = () => (
   <>
@@ -36,6 +37,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<MainSite />} />
                 <Route path="/admin" element={<AdminPanel />} />
+                <Route path="/admin/login" element={<AdminLogin />} />
               </Routes>
             </main>
             <Footer />
