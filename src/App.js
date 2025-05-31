@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo  } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -17,28 +17,28 @@ import AdminPanel from './components/Admin/AdminPanel'
 import AdminLogin from './components/Admin/AdminLogin'
 
 const LoadingScreen = () => {
-  const [loadingText, setLoadingText] = useState('Loading')
   const [textIndex, setTextIndex] = useState(0)
 
-  const loadingMessages = [
+  // Memoize loadingMessages agar tidak dibuat ulang setiap render
+  const loadingMessages = useMemo(() => [
     'Loading',
     'Preparing Experience',
     'Setting Up Interface',
     'Almost Ready',
     'Finalizing Details'
-  ]
+  ], [])
 
+  // Effect untuk mengubah index text
   useEffect(() => {
     const interval = setInterval(() => {
       setTextIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length)
     }, 800)
 
     return () => clearInterval(interval)
-  }, [loadingMessages.length])
+  }, [loadingMessages.length]) // Sekarang safe karena loadingMessages di-memoize
 
-  useEffect(() => {
-    setLoadingText(loadingMessages[textIndex])
-  }, [textIndex, loadingMessages])
+  // Text saat ini berdasarkan index
+  const currentLoadingText = loadingMessages[textIndex]
 
   return (
     <div className="loading-screen">
@@ -50,7 +50,7 @@ const LoadingScreen = () => {
         
         <div className="loading-text-container">
           <h3 className="loading-text" key={textIndex}>
-            {loadingText}
+            {currentLoadingText}
           </h3>
           <div className="loading-dots">
             <span className="dot dot-1">.</span>
@@ -69,11 +69,9 @@ const LoadingScreen = () => {
       </div>
       
       <div className="background-particles">
-        <div className="particle"></div>
-        <div className="particle"></div>
-        <div className="particle"></div>
-        <div className="particle"></div>
-        <div className="particle"></div>
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className={`particle particle-${i + 1}`}></div>
+        ))}
       </div>
       
       <style jsx>{`
@@ -107,31 +105,31 @@ const LoadingScreen = () => {
           border-radius: 50%;
         }
         
-        .particle:nth-child(1) {
+        .particle-1 {
           top: 20%;
           left: 20%;
           animation: float 6s ease-in-out infinite;
         }
         
-        .particle:nth-child(2) {
+        .particle-2 {
           top: 60%;
           left: 80%;
           animation: float 8s ease-in-out infinite 2s;
         }
         
-        .particle:nth-child(3) {
+        .particle-3 {
           top: 80%;
           left: 30%;
           animation: float 7s ease-in-out infinite 1s;
         }
         
-        .particle:nth-child(4) {
+        .particle-4 {
           top: 30%;
           left: 70%;
           animation: float 5s ease-in-out infinite 3s;
         }
         
-        .particle:nth-child(5) {
+        .particle-5 {
           top: 50%;
           left: 10%;
           animation: float 9s ease-in-out infinite 1.5s;

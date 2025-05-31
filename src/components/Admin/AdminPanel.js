@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
 import { supabase } from '../../services/supabase'
 
@@ -51,26 +51,21 @@ const AdminPanel = () => {
   })
   const [editingExperience, setEditingExperience] = useState(null)
 
-  useEffect(() => {
-    const fetchAllData = async () => {
-      if (user) {
-        await fetchProfile()
-        await fetchSkills()
-        await fetchProjects()
-        await fetchExperiences()
-      }
-    }
+  // Memoized fetch functions to prevent dependency issues
+  const fetchProfile = useCallback(async () => {
+    if (!user?.id) return
     
-    fetchAllData()
-  }, [user])
-
-  const fetchProfile = async () => {
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single()
+      
+      if (error) {
+        console.error('Error fetching profile:', error)
+        return
+      }
       
       if (data) {
         setProfile(data)
@@ -78,7 +73,82 @@ const AdminPanel = () => {
     } catch (err) {
       console.error('Error fetching profile:', err)
     }
-  }
+  }, [user?.id])
+
+  const fetchSkills = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('skills')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (error) {
+        console.error('Error fetching skills:', error)
+        return
+      }
+      
+      if (data) {
+        setSkills(data)
+      }
+    } catch (err) {
+      console.error('Error fetching skills:', err)
+    }
+  }, [])
+
+  const fetchProjects = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (error) {
+        console.error('Error fetching projects:', error)
+        return
+      }
+      
+      if (data) {
+        setProjects(data)
+      }
+    } catch (err) {
+      console.error('Error fetching projects:', err)
+    }
+  }, [])
+
+  const fetchExperiences = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('experiences')
+        .select('*')
+        .order('start_date', { ascending: false })
+      
+      if (error) {
+        console.error('Error fetching experiences:', error)
+        return
+      }
+      
+      if (data) {
+        setExperiences(data)
+      }
+    } catch (err) {
+      console.error('Error fetching experiences:', err)
+    }
+  }, [])
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      if (user) {
+        await Promise.all([
+          fetchProfile(),
+          fetchSkills(),
+          fetchProjects(),
+          fetchExperiences()
+        ])
+      }
+    }
+    
+    fetchAllData()
+  }, [user, fetchProfile, fetchSkills, fetchProjects, fetchExperiences])
 
   const updateProfile = async (e) => {
     e.preventDefault()
@@ -92,11 +162,16 @@ const AdminPanel = () => {
           updated_at: new Date().toISOString()
         })
       
-      if (error) throw error
+      if (error) {
+        console.error('Error updating profile:', error)
+        alert('Error updating profile: ' + error.message)
+        return
+      }
+      
       alert('Profile updated successfully!')
     } catch (error) {
       console.error('Error updating profile:', error)
-      alert('Error updating profile')
+      alert('Error updating profile: ' + error.message)
     }
   }
 
@@ -108,21 +183,6 @@ const AdminPanel = () => {
   }
 
   // Skills Functions
-  const fetchSkills = async () => {
-    try {
-      const { data } = await supabase
-        .from('skills')
-        .select('*')
-        .order('created_at', { ascending: false })
-      
-      if (data) {
-        setSkills(data)
-      }
-    } catch (err) {
-      console.error('Error fetching skills:', err)
-    }
-  }
-
   const handleSkillSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -132,7 +192,12 @@ const AdminPanel = () => {
           .update(skillForm)
           .eq('id', editingSkill.id)
         
-        if (error) throw error
+        if (error) {
+          console.error('Error updating skill:', error)
+          alert('Error updating skill: ' + error.message)
+          return
+        }
+        
         alert('Skill updated successfully!')
         setEditingSkill(null)
       } else {
@@ -140,7 +205,12 @@ const AdminPanel = () => {
           .from('skills')
           .insert([skillForm])
         
-        if (error) throw error
+        if (error) {
+          console.error('Error adding skill:', error)
+          alert('Error adding skill: ' + error.message)
+          return
+        }
+        
         alert('Skill added successfully!')
       }
       
@@ -153,7 +223,7 @@ const AdminPanel = () => {
       fetchSkills()
     } catch (error) {
       console.error('Error saving skill:', error)
-      alert('Error saving skill')
+      alert('Error saving skill: ' + error.message)
     }
   }
 
@@ -170,32 +240,22 @@ const AdminPanel = () => {
           .delete()
           .eq('id', id)
         
-        if (error) throw error
+        if (error) {
+          console.error('Error deleting skill:', error)
+          alert('Error deleting skill: ' + error.message)
+          return
+        }
+        
         alert('Skill deleted successfully!')
         fetchSkills()
       } catch (error) {
         console.error('Error deleting skill:', error)
-        alert('Error deleting skill')
+        alert('Error deleting skill: ' + error.message)
       }
     }
   }
 
   // Projects Functions
-  const fetchProjects = async () => {
-    try {
-      const { data } = await supabase
-        .from('projects')
-        .select('*')
-        .order('created_at', { ascending: false })
-      
-      if (data) {
-        setProjects(data)
-      }
-    } catch (err) {
-      console.error('Error fetching projects:', err)
-    }
-  }
-
   const handleProjectSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -210,7 +270,12 @@ const AdminPanel = () => {
           .update(projectData)
           .eq('id', editingProject.id)
         
-        if (error) throw error
+        if (error) {
+          console.error('Error updating project:', error)
+          alert('Error updating project: ' + error.message)
+          return
+        }
+        
         alert('Project updated successfully!')
         setEditingProject(null)
       } else {
@@ -218,7 +283,12 @@ const AdminPanel = () => {
           .from('projects')
           .insert([projectData])
         
-        if (error) throw error
+        if (error) {
+          console.error('Error adding project:', error)
+          alert('Error adding project: ' + error.message)
+          return
+        }
+        
         alert('Project added successfully!')
       }
       
@@ -235,7 +305,7 @@ const AdminPanel = () => {
       fetchProjects()
     } catch (error) {
       console.error('Error saving project:', error)
-      alert('Error saving project')
+      alert('Error saving project: ' + error.message)
     }
   }
 
@@ -255,32 +325,22 @@ const AdminPanel = () => {
           .delete()
           .eq('id', id)
         
-        if (error) throw error
+        if (error) {
+          console.error('Error deleting project:', error)
+          alert('Error deleting project: ' + error.message)
+          return
+        }
+        
         alert('Project deleted successfully!')
         fetchProjects()
       } catch (error) {
         console.error('Error deleting project:', error)
-        alert('Error deleting project')
+        alert('Error deleting project: ' + error.message)
       }
     }
   }
 
   // Experience Functions
-  const fetchExperiences = async () => {
-    try {
-      const { data } = await supabase
-        .from('experiences')
-        .select('*')
-        .order('start_date', { ascending: false })
-      
-      if (data) {
-        setExperiences(data)
-      }
-    } catch (err) {
-      console.error('Error fetching experiences:', err)
-    }
-  }
-
   const handleExperienceSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -297,7 +357,12 @@ const AdminPanel = () => {
           .update(experienceData)
           .eq('id', editingExperience.id)
         
-        if (error) throw error
+        if (error) {
+          console.error('Error updating experience:', error)
+          alert('Error updating experience: ' + error.message)
+          return
+        }
+        
         alert('Experience updated successfully!')
         setEditingExperience(null)
       } else {
@@ -305,7 +370,12 @@ const AdminPanel = () => {
           .from('experiences')
           .insert([experienceData])
         
-        if (error) throw error
+        if (error) {
+          console.error('Error adding experience:', error)
+          alert('Error adding experience: ' + error.message)
+          return
+        }
+        
         alert('Experience added successfully!')
       }
       
@@ -345,12 +415,17 @@ const AdminPanel = () => {
           .delete()
           .eq('id', id)
         
-        if (error) throw error
+        if (error) {
+          console.error('Error deleting experience:', error)
+          alert('Error deleting experience: ' + error.message)
+          return
+        }
+        
         alert('Experience deleted successfully!')
         fetchExperiences()
       } catch (error) {
         console.error('Error deleting experience:', error)
-        alert('Error deleting experience')
+        alert('Error deleting experience: ' + error.message)
       }
     }
   }
