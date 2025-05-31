@@ -9,8 +9,7 @@ import {
   Twitter, 
   Send,
   User,
-  MessageSquare,
-  ExternalLink
+  MessageSquare
 } from 'lucide-react'
 
 const Contact = () => {

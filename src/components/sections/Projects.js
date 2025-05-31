@@ -15,7 +15,7 @@ const Projects = () => {
 
   const fetchProjects = async () => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('projects')
         .select('*')
         .order('created_at', { ascending: false })

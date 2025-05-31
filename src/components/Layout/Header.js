@@ -45,7 +45,7 @@ const Header = () => {
     <nav className="navbar navbar-expand-lg navbar-light fixed-top glass-effect">
       <div className="container">
         <Link className="navbar-brand text-gradient" to="/">
-          Portfolio
+          Yssufsz
         </Link>
         
         <button 

@@ -402,15 +402,12 @@ const MainSite = () => (
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
-  const [componentsLoaded, setComponentsLoaded] = useState(false)
 
   useEffect(() => {
     const loadComponents = async () => {
       try {
         await new Promise(resolve => setTimeout(resolve, 1000))
         await new Promise(resolve => setTimeout(resolve, 1500))
-        
-        setComponentsLoaded(true)
         
         setTimeout(() => {
           setIsLoading(false)

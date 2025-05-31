@@ -17,6 +17,11 @@ const About = () => {
         .select('*')
         .single()
       
+      if (error) {
+        console.error('Supabase error:', error)
+        return
+      }
+      
       if (data) setProfile(data)
     } catch (error) {
       console.error('Error fetching profile:', error)

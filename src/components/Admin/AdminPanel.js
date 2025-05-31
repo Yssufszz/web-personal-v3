@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
-import { useLanguage } from '../../contexts/LanguageContext'
 import { supabase } from '../../services/supabase'
 
 const AdminPanel = () => {
   const { user } = useAuth()
-  const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState('profile')
   const [profile, setProfile] = useState({
     full_name: '',
@@ -60,7 +58,7 @@ const AdminPanel = () => {
       fetchProjects()
       fetchExperiences()
     }
-  }, [user])
+  }, [user]) 
 
   const fetchProfile = async () => {
     try {
@@ -73,8 +71,8 @@ const AdminPanel = () => {
       if (data) {
         setProfile(data)
       }
-    } catch (error) {
-      console.error('Error fetching profile:', error)
+    } catch (err) {
+      console.error('Error fetching profile:', err)
     }
   }
 
@@ -116,8 +114,8 @@ const AdminPanel = () => {
       if (data) {
         setSkills(data)
       }
-    } catch (error) {
-      console.error('Error fetching skills:', error)
+    } catch (err) {
+      console.error('Error fetching skills:', err)
     }
   }
 
@@ -189,8 +187,8 @@ const AdminPanel = () => {
       if (data) {
         setProjects(data)
       }
-    } catch (error) {
-      console.error('Error fetching projects:', error)
+    } catch (err) {
+      console.error('Error fetching projects:', err)
     }
   }
 
@@ -274,8 +272,8 @@ const AdminPanel = () => {
       if (data) {
         setExperiences(data)
       }
-    } catch (error) {
-      console.error('Error fetching experiences:', error)
+    } catch (err) {
+      console.error('Error fetching experiences:', err)
     }
   }
 

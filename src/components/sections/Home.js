@@ -3,7 +3,7 @@ import { useLanguage } from '../../contexts/LanguageContext'
 import { supabase } from '../../services/supabase'
 
 const Home = () => {
-  const { language, t } = useLanguage()
+  const { t } = useLanguage()
   const [profile, setProfile] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -14,7 +14,7 @@ const Home = () => {
   const fetchProfile = async () => {
     try {
       setIsLoading(true)
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('profiles')
         .select('*')
         .single()

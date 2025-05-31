@@ -56,9 +56,14 @@ const Experience = () => {
         .select('*')
         .order('start_date', { ascending: false })
       
+      if (error) {
+        console.error('Supabase error:', error)
+        setLoading(false)
+        return
+      }
+      
       if (data) {
         setExperiences(data)
-        // Auto-select first experience
         if (data.length > 0) setSelectedExp(data[0])
       }
       setLoading(false)

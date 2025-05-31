@@ -13,7 +13,7 @@ const Skills = () => {
 
   const fetchSkills = async () => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('skills')
         .select('*')
         .order('level', { ascending: false })
