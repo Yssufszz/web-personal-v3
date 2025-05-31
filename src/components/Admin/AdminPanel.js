@@ -52,17 +52,21 @@ const AdminPanel = () => {
   const [editingExperience, setEditingExperience] = useState(null)
 
   useEffect(() => {
-    if (user) {
-      fetchProfile()
-      fetchSkills()
-      fetchProjects()
-      fetchExperiences()
+    const fetchAllData = async () => {
+      if (user) {
+        await fetchProfile()
+        await fetchSkills()
+        await fetchProjects()
+        await fetchExperiences()
+      }
     }
-  }, [user]) 
+    
+    fetchAllData()
+  }, [user])
 
   const fetchProfile = async () => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
@@ -106,7 +110,7 @@ const AdminPanel = () => {
   // Skills Functions
   const fetchSkills = async () => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('skills')
         .select('*')
         .order('created_at', { ascending: false })
@@ -179,7 +183,7 @@ const AdminPanel = () => {
   // Projects Functions
   const fetchProjects = async () => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('projects')
         .select('*')
         .order('created_at', { ascending: false })
@@ -264,7 +268,7 @@ const AdminPanel = () => {
   // Experience Functions
   const fetchExperiences = async () => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('experiences')
         .select('*')
         .order('start_date', { ascending: false })

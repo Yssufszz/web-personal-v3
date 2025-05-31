@@ -34,11 +34,11 @@ const LoadingScreen = () => {
     }, 800)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [loadingMessages.length])
 
   useEffect(() => {
     setLoadingText(loadingMessages[textIndex])
-  }, [textIndex])
+  }, [textIndex, loadingMessages])
 
   return (
     <div className="loading-screen">
