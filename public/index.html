@@ -4,40 +4,102 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#0066ff" />
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="Personal Portfolio Website - Fullstack Developer specializing in React and Node.js"
     />
+    <meta name="keywords" content="portfolio, developer, react, nodejs, fullstack, web development" />
+    <meta name="author" content="Personal Website" />
+    
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Personal Portfolio - Fullstack Developer" />
+    <meta property="og:description" content="Personal Portfolio Website - Fullstack Developer specializing in React and Node.js" />
+    <meta property="og:image" content="%PUBLIC_URL%/og-image.png" />
+    
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Personal Portfolio - Fullstack Developer" />
+    <meta property="twitter:description" content="Personal Portfolio Website - Fullstack Developer specializing in React and Node.js" />
+    <meta property="twitter:image" content="%PUBLIC_URL%/twitter-image.png" />
+    
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
+    
+    <style>
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: linear-gradient(135deg, #f8faff 0%, #e8f4ff 100%);
+        overflow-x: hidden;
+      }
+      
+      code {
+        font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+      }
+      
+      #root {
+        min-height: 100vh;
+        position: relative;
+      }
+      
+      html {
+        scroll-behavior: smooth;
+      }
+      
+      body.loading {
+        overflow: hidden;
+      }
+    </style>
+    
+    <title>Personal Portfolio - Fullstack Developer</title>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>
+      <div style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f8faff 0%, #e8f4ff 100%);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        text-align: center;
+        padding: 20px;
+      ">
+        <div style="
+          background: white;
+          padding: 40px;
+          border-radius: 15px;
+          box-shadow: 0 20px 40px rgba(0, 102, 255, 0.1);
+          max-width: 400px;
+        ">
+          <h2 style="color: #0066ff; margin-bottom: 20px;">JavaScript Required</h2>
+          <p style="color: #666; line-height: 1.6;">
+            You need to enable JavaScript to run this personal portfolio website.
+            Please enable JavaScript in your browser settings and refresh the page.
+          </p>
+        </div>
+      </div>
+    </noscript>
+    
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    
+    <script>
+      document.body.classList.add('loading');
+      
+      window.addEventListener('load', function() {
+        setTimeout(() => {
+          document.body.classList.remove('loading');
+        }, 100);
+      });
+      
+      window.addEventListener('error', function(e) {
+        console.error('Application error:', e.error);
+      });
+    </script>
+    
   </body>
 </html>
