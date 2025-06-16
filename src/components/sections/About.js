@@ -190,7 +190,7 @@ const About = () => {
                   gap: '1rem'
                 }}>
                   <a 
-                    href={profile?.linkedin_url || '#'} 
+                    href={profile?.linkedin_url || 'https://www.linkedin.com/in/yusuf-s-004752258/'} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     style={{
@@ -215,7 +215,7 @@ const About = () => {
                     LinkedIn
                   </a>
                   <a 
-                    href={profile?.github_url || '#'} 
+                    href={profile?.github_url || 'https://github.com/Yssufszz'} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     style={{
