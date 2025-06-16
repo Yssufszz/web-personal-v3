@@ -5,7 +5,6 @@ const Intro = ({ onComplete }) => {
   const [showText, setShowText] = useState(false)
   const [loadingProgress, setLoadingProgress] = useState(0)
 
-  // Animation sequence
   useEffect(() => {
     const progressInterval = setInterval(() => {
       setLoadingProgress(prev => {
@@ -39,7 +38,7 @@ const Intro = ({ onComplete }) => {
       left: 0,
       width: '100vw',
       height: '100vh',
-      background: 'linear-gradient(135deg, #f8faff 0%, #e8f4ff 100%)', // --light-gradient-bg
+      background: 'linear-gradient(135deg, #f8faff 0%, #e8f4ff 100%)', 
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -58,13 +57,13 @@ const Intro = ({ onComplete }) => {
         fontFamily: "'Roboto', sans-serif"
       }}>
         <h1 style={{
-          color: '#1a1a1a', // --light-text-primary
+          color: '#1a1a1a', 
           fontSize: 'clamp(3rem, 8vw, 4.5rem)',
-          fontWeight: 500, // Slightly bolder for clarity
+          fontWeight: 500, 
           letterSpacing: '0.25em',
           marginBottom: '1.5rem',
           textTransform: 'uppercase',
-          textShadow: '0 0 8px rgba(0, 102, 255, 0.2)', // Reduced glow for sharper text
+          textShadow: '0 0 8px rgba(0, 102, 255, 0.2)',
           display: 'inline-block',
           overflow: 'hidden',
           whiteSpace: 'nowrap',
@@ -74,15 +73,15 @@ const Intro = ({ onComplete }) => {
             '100%': { width: '100%' }
           }
         }}>
-          YSSFZ
+          YSSUFSZ
         </h1>
         <div style={{
           width: '180px',
           height: '3px',
-          background: 'linear-gradient(90deg, transparent, #0066ff, transparent)', // --light-primary
+          background: 'linear-gradient(90deg, transparent, #0066ff, transparent)', 
           margin: '0 auto',
           animation: 'pulse 2s infinite ease-in-out',
-          boxShadow: '0 0 10px rgba(0, 102, 255, 0.3)', // --light-glow
+          boxShadow: '0 0 10px rgba(0, 102, 255, 0.3)', 
           '@keyframes pulse': {
             '0%, 100%': { transform: 'scaleX(1)' },
             '50%': { transform: 'scaleX(1.2)' }
@@ -99,11 +98,11 @@ const Intro = ({ onComplete }) => {
       }}>
         <div style={{
           width: '100%',
-          height: '6px', // Slightly thicker for visibility
-          background: 'rgba(0, 102, 255, 0.1)', // --light-border
+          height: '6px', 
+          background: 'rgba(0, 102, 255, 0.1)',
           borderRadius: '3px',
           overflow: 'hidden',
-          boxShadow: '0 0 10px rgba(0, 102, 255, 0.2)', // --light-glow
+          boxShadow: '0 0 10px rgba(0, 102, 255, 0.2)', 
           animation: 'barPulse 2.5s infinite ease-in-out',
           '@keyframes barPulse': {
             '0%, 100%': { transform: 'scale(1)' },
@@ -113,10 +112,10 @@ const Intro = ({ onComplete }) => {
           <div style={{
             width: `${Math.min(loadingProgress, 100)}%`,
             height: '100%',
-            background: 'linear-gradient(90deg, #0066ff, #00d4ff)', // --light-primary to --light-secondary
+            background: 'linear-gradient(90deg, #0066ff, #00d4ff)', 
             transition: 'width 0.3s ease-out',
             borderRadius: '3px',
-            boxShadow: '0 0 12px rgba(0, 102, 255, 0.4)', // Enhanced --light-glow
+            boxShadow: '0 0 12px rgba(0, 102, 255, 0.4)', 
             position: 'relative',
             overflow: 'hidden'
           }}>
@@ -137,12 +136,12 @@ const Intro = ({ onComplete }) => {
           </div>
         </div>
         <div style={{
-          color: '#1a1a1a', // --light-text-primary
+          color: '#1a1a1a', 
           fontSize: 'clamp(1rem, 2.5vw, 1.2rem)',
           fontWeight: 400,
           marginTop: '0.75rem',
           fontFamily: "'Roboto', sans-serif",
-          textShadow: '0 0 5px rgba(0, 102, 255, 0.2)' // Subtle --light-glow
+          textShadow: '0 0 5px rgba(0, 102, 255, 0.2)' 
         }}>
           {Math.floor(Math.min(loadingProgress, 100))}%
         </div>

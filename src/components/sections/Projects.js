@@ -32,7 +32,8 @@ const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [desktopModalIsOpen, setDesktopModalIsOpen] = useState(false);
+  const [mobileModalIsOpen, setMobileModalIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const bookRef = useRef(null);
   const sectionRef = useRef(null);
@@ -73,9 +74,9 @@ const Projects = () => {
     }
   };
 
-  const openModal = (project) => {
+  const openDesktopModal = (project) => {
     setSelectedProject(project);
-    setModalIsOpen(true);
+    setDesktopModalIsOpen(true);
     gsap.fromTo(
       '.modal-content',
       { y: 50, opacity: 0 },
@@ -83,14 +84,39 @@ const Projects = () => {
     );
   };
 
-  const closeModal = () => {
+  const closeDesktopModal = () => {
     gsap.to('.modal-content', {
       y: 50,
       opacity: 0,
       duration: 0.3,
       ease: 'power2.in',
       onComplete: () => {
-        setModalIsOpen(false);
+        setDesktopModalIsOpen(false);
+        setSelectedProject(null);
+      },
+    });
+  };
+
+  const openMobileModal = (project) => {
+    console.log('Opening mobile modal for project:', project);
+    setSelectedProject(project);
+    setMobileModalIsOpen(true);
+    gsap.fromTo(
+      '.mobile-modal-content',
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.4, ease: 'power2.out' }
+    );
+  };
+
+  const closeMobileModal = () => {
+    console.log('Closing mobile modal');
+    gsap.to('.mobile-modal-content', {
+      y: 50,
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.in',
+      onComplete: () => {
+        setMobileModalIsOpen(false);
         setSelectedProject(null);
       },
     });
@@ -276,6 +302,35 @@ const Projects = () => {
             transform: translateY(-5px);
           }
 
+          .view-details-btn-container {
+            position: relative;
+            z-index: 100;
+            pointer-events: none;
+          }
+
+          .view-details-btn {
+            display: none;
+            margin-top: 1rem;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            transition: all var(--transition-speed) ease;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            pointer-events: auto;
+            z-index: 101;
+            cursor: pointer;
+          }
+
+          .view-details-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--glow-color);
+          }
+
           .book-cover, .book-back-cover {
             background: linear-gradient(145deg, var(--primary), var(--secondary));
             display: flex;
@@ -410,6 +465,18 @@ const Projects = () => {
             max-width: 400px;
             width: 85%;
             max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 50px var(--shadow-color);
+          }
+
+          .mobile-modal-content {
+            background: var(--bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            max-width: 90%;
+            width: 95%;
+            max-height: 85vh;
             overflow-y: auto;
             position: relative;
             box-shadow: 0 10px 50px var(--shadow-color);
@@ -603,6 +670,14 @@ const Projects = () => {
             .slider-container {
               max-width: 400px;
             }
+
+            .view-details-btn {
+              display: block;
+            }
+
+            .book-page {
+              cursor: default;
+            }
           }
 
           @media (max-width: 480px) {
@@ -618,7 +693,7 @@ const Projects = () => {
               height: 400px;
             }
 
-            .modal-content {
+            .mobile-modal-content {
               width: 95%;
               border-radius: 10px;
             }
@@ -654,7 +729,7 @@ const Projects = () => {
                     startZIndex={0}
                     drawShadow={false}
                     usePortrait={true}
-                    mobileScrollSupport={false}
+                    mobileScrollSupport={true}
                     ref={bookRef}
                     onFlip={handlePageFlip}
                     useMouseEvents={true}
@@ -668,7 +743,7 @@ const Projects = () => {
                       <div
                         key={project.id}
                         className={`book-page entered`}
-                        onClick={() => openModal(project)}
+                        onClick={window.innerWidth > 768 ? () => openDesktopModal(project) : undefined}
                       >
                         {project.image_url && (
                           <img
@@ -678,6 +753,23 @@ const Projects = () => {
                           />
                         )}
                         <h3>{(language === 'en' ? project.title_en : project.title_id) || 'Untitled'}</h3>
+                        <div className="view-details-btn-container">
+                          <button
+                            className="view-details-btn project-btn project-btn-primary"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log('Button clicked:', project);
+                              openMobileModal(project);
+                            }}
+                            onTouchStart={(e) => {
+                              e.stopPropagation();
+                              console.log('Button touched:', project);
+                              openMobileModal(project);
+                            }}
+                          >
+                            {t('viewDetails')}
+                          </button>
+                        </div>
                       </div>
                     ))}
                     <div key="back-cover" className="book-back-cover entered">
@@ -705,16 +797,81 @@ const Projects = () => {
             </div>
           )}
 
+          {/* Desktop Modal */}
           <Modal
-            isOpen={modalIsOpen}
-            onRequestClose={closeModal}
+            isOpen={desktopModalIsOpen}
+            onRequestClose={closeDesktopModal}
             className="modal-content"
             overlayClassName="modal-overlay"
             contentLabel="Project Details"
           >
             {selectedProject && (
               <div>
-                <button className="modal-close" onClick={closeModal}>
+                <button className="modal-close" onClick={closeDesktopModal}>
+                  ×
+                </button>
+                {selectedProject.image_url && (
+                  <img
+                    src={selectedProject.image_url}
+                    className="project-card-img"
+                    alt={(language === 'en' ? selectedProject.title_en : selectedProject.title_id) || 'Project Image'}
+                  />
+                )}
+                <div className="project-card-body">
+                  <h5 className="project-title">
+                    {(language === 'en' ? selectedProject.title_en : selectedProject.title_id) || 'Untitled'}
+                  </h5>
+                  <p className="project-description">
+                    {(language === 'en' ? selectedProject.description_en : selectedProject.description_id) || 'No description available.'}
+                  </p>
+                  {selectedProject.tech_stack && selectedProject.tech_stack.length > 0 && (
+                    <div className="tech-stack">
+                      <span className="tech-label">{t('technologies')}:</span>
+                      <div className="tech-badges">
+                        {selectedProject.tech_stack.map((tech, index) => (
+                          <span key={index} className="tech-badge">{tech}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="project-actions">
+                    {selectedProject.github_url && (
+                      <a
+                        href={selectedProject.github_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="project-btn project-btn-outline"
+                      >
+                        {t('viewGitHub')}
+                      </a>
+                    )}
+                    {selectedProject.demo_url && (
+                      <a
+                        href={selectedProject.demo_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="project-btn project-btn-primary"
+                      >
+                        {t('viewDemo')}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </Modal>
+
+          {/* Mobile Modal */}
+          <Modal
+            isOpen={mobileModalIsOpen}
+            onRequestClose={closeMobileModal}
+            className="mobile-modal-content"
+            overlayClassName="modal-overlay"
+            contentLabel="Project Details Mobile"
+          >
+            {selectedProject && (
+              <div>
+                <button className="modal-close" onClick={closeMobileModal}>
                   ×
                 </button>
                 {selectedProject.image_url && (
