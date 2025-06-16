@@ -1,4 +1,6 @@
 :root {
+  --scroll-progress: 0;
+
   --light-primary: #0066ff;
   --light-primary-dark: #0052cc;
   --light-secondary: #00d4ff;
@@ -997,4 +999,98 @@ img {
   .animate-fade-in {
     animation-duration: 0.5s;
   }
+}
+.navbar {
+  transition: all var(--transition-speed) ease-in-out;
+}
+
+@keyframes pulseShrink {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  30% {
+    transform: scale(0.95) rotate(2deg); /* Slight tilt */
+  }
+  60% {
+    transform: scale(0.87) rotate(-1deg); /* Reverse tilt */
+  }
+  100% {
+    transform: scale(0.85) rotate(0deg); /* Final state */
+  }
+}
+
+/* Pulse expand animation */
+@keyframes pulseExpand {
+  0% {
+    transform: scale(0.85) rotate(0deg);
+  }
+  30% {
+    transform: scale(1.05) rotate(-2deg); /* Overshoot with tilt */
+  }
+  60% {
+    transform: scale(0.97) rotate(1deg); /* Bounce back */
+  }
+  100% {
+    transform: scale(1) rotate(0deg); /* Final state */
+  }
+}
+
+/* Smooth transition for navbar */
+.navbar.navbar-expand-md.fixed-top {
+  transition: width 0.8s ease,
+              border-radius 0.8s ease,
+              background-color 0.8s ease,
+              padding 0.8s ease !important;
+  transform-origin: center;
+  width: calc(100% - (var(--scroll-progress) * 20%)) !important; /* 100% to 80% */
+  left: 50% !important;
+  transform: translateX(-50%) !important; /* Center horizontally */
+  margin: 0 !important;
+  border-radius: calc(var(--scroll-progress) * 12px) !important;
+  padding: calc(0.5rem + (var(--scroll-progress) * 0.5rem)) 0 !important;
+  z-index: 1000 !important; /* Ensure header is above other elements */
+  background-color: rgba(var(--bg-card-rgb), calc(var(--scroll-progress) * 1)) !important; /* Interpolate opacity */
+  backdrop-filter: blur(calc(var(--scroll-progress) * var(--glass-blur))) !important;
+  -webkit-backdrop-filter: blur(calc(var(--scroll-progress) * var(--glass-blur))) !important;
+}
+
+/* Remove box-shadow from animations to avoid artifacts */
+.navbar.navbar-expand-md.fixed-top.navbar-shrinking .container {
+  animation: pulseShrink 0.8s ease forwards;
+}
+
+.navbar.navbar-expand-md.fixed-top.navbar-expanding .container {
+  animation: pulseExpand 0.8s ease forwards;
+}
+
+/* Ensure container follows smooth transition */
+.navbar.navbar-expand-md.fixed-top .container {
+  transition: padding 0.8s ease !important;
+  padding-left: calc(10px + (var(--scroll-progress) * 10px)) !important; /* 10px to 20px */
+  padding-right: calc(10px + (var(--scroll-progress) * 10px)) !important;
+}
+
+/* Reset Bootstrap width and positioning */
+.navbar.navbar-expand-md.fixed-top {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+/* Ensure consistent glass-effect */
+.navbar.navbar-expand-md.fixed-top.glass-effect {
+  transition: background-color 0.8s ease !important;
+}
+
+/* Transparent background at top */
+.navbar.navbar-expand-md.fixed-top.navbar-expanding:not(.navbar-shrinking) {
+  background-color: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  box-shadow: none !important;
+}
+
+/* Add box-shadow only when shrinking */
+.navbar.navbar-expand-md.fixed-top.navbar-shrinking {
+  box-shadow: 0 4px 12px var(--shadow-color) !important;
 }

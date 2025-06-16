@@ -1,0 +1,294 @@
+.contactYssfsz-section {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--bg-primary), #16213E);
+  padding: 3rem 0;
+  display: flex;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+.contactYssfsz-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.contactYssfsz-header {
+  opacity: 0;
+  animation: contactYssfsz-slideIn 1s ease-out forwards;
+  margin-bottom: 2.5rem;
+}
+
+.contactYssfsz-text-gradient {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.contactYssfsz-glow-text {
+  text-shadow: 0 0 12px var(--glow-color), 0 0 24px var(--glow-color);
+}
+
+.contactYssfsz-glass-card {
+  background: var(--bg-secondary);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.contactYssfsz-glass-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px var(--glow-color);
+}
+
+.contactYssfsz-contact-info-card {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  transition: all 0.4s ease;
+}
+
+.contactYssfsz-contact-info-card:hover {
+  transform: translateX(8px);
+  border-color: var(--primary);
+  box-shadow: 0 4px 15px var(--glow-color);
+}
+
+.contactYssfsz-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 50%;
+  margin-right: 1rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.contactYssfsz-contact-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.contactYssfsz-contact-link:hover {
+  color: var(--primary);
+}
+
+.contactYssfsz-social-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.contactYssfsz-social-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.4s ease;
+}
+
+.contactYssfsz-social-icon:hover {
+  transform: translateY(-5px) scale(1.1);
+  border-color: var(--social-color);
+  color: var(--social-color);
+  box-shadow: 0 6px 20px var(--glow-color);
+}
+
+.contactYssfsz-tiktok-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.contactYssfsz-form-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.contactYssfsz-form-label svg {
+  color: var(--primary);
+  margin-right: 0.5rem;
+}
+
+.contactYssfsz-form-control {
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  width: 100%;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.contactYssfsz-form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.25rem var(--glow-color);
+  outline: none;
+}
+
+.contactYssfsz-form-control::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+textarea.contactYssfsz-form-control {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.contactYssfsz-btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 2rem;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  font-size: 1rem;
+}
+
+.contactYssfsz-btn-primary:disabled {
+  background: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+.contactYssfsz-btn-primary:not(:disabled):hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px var(--glow-color);
+}
+
+@keyframes contactYssfsz-slideIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.contactYssfsz-contact-info-card,
+.contactYssfsz-glass-card,
+.contactYssfsz-social-links {
+  animation: contactYssfsz-slideIn 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+}
+
+@media (max-width: 992px) {
+  .contactYssfsz-section {
+    padding: 2rem 0;
+  }
+
+  .contactYssfsz-glass-card {
+    padding: 1.5rem;
+  }
+
+  .contactYssfsz-container {
+    padding: 0 1rem;
+  }
+
+  .contactYssfsz-contact-info-card {
+    padding: 0.75rem;
+  }
+
+  .contactYssfsz-icon-wrapper {
+    width: 40px;
+    height: 40px;
+  }
+
+  .contactYssfsz-social-links {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .contactYssfsz-section {
+    padding: 1.5rem 0;
+  }
+
+  .contactYssfsz-header {
+    margin-bottom: 2rem;
+  }
+
+  .contactYssfsz-header h2 {
+    font-size: 2rem;
+  }
+
+  .contactYssfsz-header .lead {
+    font-size: 1rem;
+  }
+
+  .contactYssfsz-glass-card {
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .contactYssfsz-contact-info-card {
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .contactYssfsz-icon-wrapper {
+    width: 36px;
+    height: 36px;
+  }
+
+  .contactYssfsz-social-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .contactYssfsz-tiktok-icon,
+  .contactYssfsz-social-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .contactYssfsz-form-label {
+    font-size: 0.95rem;
+  }
+
+  .contactYssfsz-form-control {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+  }
+
+  textarea.contactYssfsz-form-control {
+    min-height: 120px;
+  }
+
+  .contactYssfsz-btn-primary {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .contactYssfsz-social-links {
+    gap: 0.75rem;
+    justify-content: center;
+  }
+}
