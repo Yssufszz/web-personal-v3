@@ -43,8 +43,6 @@ const Header = () => {
         const progress = Math.min(currentScrollY / maxScroll, 1)
 
         document.documentElement.style.setProperty('--scroll-progress', progress)
-        console.log('ScrollY:', currentScrollY, 'Progress:', progress, 'Shrinking:', isShrinking)
-
         if (currentScrollY > lastScrollY && currentScrollY > 50) {
           setIsShrinking(true) 
         } else if (currentScrollY < lastScrollY || currentScrollY <= 50) {
